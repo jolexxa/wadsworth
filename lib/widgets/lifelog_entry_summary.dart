@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wadsworth/app/utility.dart';
+import 'package:wadsworth/blocs/blocs.dart';
 import 'package:wadsworth/models/models.dart';
 import 'package:wadsworth/widgets/widgets.dart';
 
@@ -11,33 +13,42 @@ class LifelogEntrySummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(
-      children: [
-        ListTile(
-          leading: Icon(Icons.lightbulb_outline, color: theme.accentColor),
-          title: Text(
-            prettyDate(lifelog.timestamp),
-            style: TextStyle(fontSize: 18),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-          child: Column(
-            children: [
-              Row(children: [
-                LifelogFieldText('Mood'),
-                LifelogFieldText(moodToEmoji((lifelog.mood)))
-              ]),
-              Row(
+    final lifelogBloc = BlocProvider.of<LifelogBloc>(context);
+    return Dismissible(
+      key: Key(lifelog.id.toString()),
+      onDismissed: (direction) {
+        lifelogBloc.add(LifelogRemoved(lifelog));
+      },
+      child: LifelogCard(
+        child: Column(
+          children: [
+            ListTile(
+              leading: Icon(Icons.lightbulb_outline, color: theme.accentColor),
+              title: Text(
+                prettyDate(lifelog.timestamp),
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+              child: Column(
                 children: [
-                  LifelogFieldText('Thoughts'),
-                  Text(lifelog.thoughts),
+                  Row(children: [
+                    LifelogFieldText('Mood'),
+                    LifelogFieldText(moodToEmoji((lifelog.mood)))
+                  ]),
+                  Row(
+                    children: [
+                      LifelogFieldText('Thoughts'),
+                      Text(lifelog.thoughts),
+                    ],
+                  ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
