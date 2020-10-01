@@ -55,7 +55,7 @@ create table $table (
         LifelogEntity.columnThoughts,
         LifelogEntity.columnTimestamp,
       ],
-      orderBy: '${LifelogEntity.columnTimestamp} ASC',
+      orderBy: '${LifelogEntity.columnTimestamp} DESC',
     );
     final lifelogEntities =
         result.map((map) => LifelogEntity.fromMap(map)).toList();

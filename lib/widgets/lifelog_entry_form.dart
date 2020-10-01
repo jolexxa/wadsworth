@@ -132,9 +132,7 @@ class _LifelogEntryFormState extends State<LifelogEntryForm> {
                               child: Text('SUBMIT'),
                               onPressed: () {
                                 if (_formKey.currentState.validate()) {
-                                  print(
-                                    'You typed ${_thoughtsController.text}',
-                                  );
+                                  Navigator.of(context).pop();
                                   final thoughts = _thoughtsController.text;
                                   final mood = Mood.values[_selectedMoodIndex];
                                   final lifelog =

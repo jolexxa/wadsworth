@@ -31,13 +31,17 @@ class LifelogEntrySummary extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-              child: Column(
+              child: Row(
                 children: [
-                  Row(children: [
-                    LifelogFieldText('Mood'),
-                    LifelogFieldText(moodToEmoji((lifelog.mood)))
-                  ]),
-                  Row(
+                  Padding(
+                    padding: EdgeInsets.only(right: 20),
+                    child: Text(
+                      moodToEmoji((lifelog.mood)),
+                      style: TextStyle(fontSize: 36),
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       LifelogFieldText('Thoughts'),
                       Text(lifelog.thoughts),
