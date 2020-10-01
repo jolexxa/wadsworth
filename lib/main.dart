@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lifelog_repo/lifelog_repo.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:wadsworth/widgets/empty_area.dart';
 
 import 'package:wadsworth/widgets/widgets.dart';
 import 'package:wadsworth/app/theme.dart';
@@ -46,6 +47,7 @@ class AppHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     // final lifelogBloc = BlocProvider.of<LifelogBloc>(context);
     return Scaffold(
       appBar: PreferredSize(
@@ -68,29 +70,73 @@ class AppHome extends StatelessWidget {
       ),
       body: BlocBuilder<LifelogBloc, LifelogState>(
         builder: (context, state) {
-          var contents = <Widget>[Text('Nothing')];
           if (state is LifelogStateLoadSuccess) {
-            contents = List.generate(
-              state.lifelogs.length,
-              (int index) {
-                final lifelog = state.lifelogs[index];
-                return LifelogEntry(
-                  key: Key(lifelog.id.toString()),
-                );
-              },
-            );
-          }
-          return ListView(
-            controller: _scrollController,
-            children: [
-              ...contents,
+            if (state.lifelogs.isNotEmpty) {
               // Empty space so we can over-scroll a bit so that floating
               // action button doesn't obscure stuff
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 32),
+              final listViewChildren = <Widget>[
+                ...List.generate(
+                  state.lifelogs.length,
+                  (int index) {
+                    final lifelog = state.lifelogs[index];
+                    return LifelogEntrySummary(
+                      lifelog: lifelog,
+                      key: Key(lifelog.id.toString()),
+                    );
+                  },
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 32),
+                ),
+              ];
+              return ListView(
+                controller: _scrollController,
+                children: listViewChildren,
+              );
+            } else {
+              return Padding(
+                padding: EdgeInsets.only(bottom: 90),
+                child: EmptyArea(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 16),
+                            child: Icon(
+                              Icons.lightbulb_outline,
+                              size: 70,
+                              color: theme.primaryTextTheme.headline6.color
+                                  .withAlpha(128),
+                            ),
+                          ),
+                          Text(
+                            'Add your first memory!',
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.headline6.copyWith(
+                              fontWeight: FontWeight.w200,
+                              color: theme.primaryTextTheme.headline6.color
+                                  .withAlpha(128),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+          } else {
+            return EmptyArea(
+              child: SizedBox(
+                width: 80,
+                height: 80,
+                child: CircularProgressIndicator(),
               ),
-            ],
-          );
+            );
+          }
         },
       ),
       floatingActionButton: Column(
@@ -106,7 +152,7 @@ class AppHome extends StatelessWidget {
                   showCupertinoModalBottomSheet(
                     context: context,
                     builder: (context, scrollController) =>
-                        Scaffold(body: LifelogEntry()),
+                        Scaffold(body: LifelogEntryForm()),
                   );
                   // lifelogBloc.add(LifelogAdded(Lifelog(isBeingEdited: true)));
 

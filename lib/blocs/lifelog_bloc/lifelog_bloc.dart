@@ -27,10 +27,14 @@ class LifelogBloc extends Bloc<LifelogEvent, LifelogState> {
 
   Stream<LifelogState> _mapLifelogAddedToState(LifelogAdded event) async* {
     await lifelogClient.insert(event.lifelog.toEntity());
+    // SOMEDAY: Keep local cache for the sake of performance instead of reloading
+    // everything
+    add(LifelogReloadRequested());
   }
 
   Stream<LifelogState> _mapLifelogRemovedToState(LifelogRemoved event) async* {
     await lifelogClient.delete(event.lifelog.dbId);
+    add(LifelogReloadRequested());
   }
 
   Stream<LifelogState> _mapLifelogReloadRequestedToState(

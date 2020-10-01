@@ -5,16 +5,16 @@ import 'package:wadsworth/blocs/blocs.dart';
 import 'package:wadsworth/models/models.dart';
 import 'package:wadsworth/widgets/widgets.dart';
 
-class LifelogEntry extends StatefulWidget {
-  LifelogEntry({
+class LifelogEntryForm extends StatefulWidget {
+  LifelogEntryForm({
     Key key,
   }) : super(key: key);
 
   @override
-  _LifelogEntryState createState() => _LifelogEntryState();
+  _LifelogEntryFormState createState() => _LifelogEntryFormState();
 }
 
-class _LifelogEntryState extends State<LifelogEntry> {
+class _LifelogEntryFormState extends State<LifelogEntryForm> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   final _thoughtsController = TextEditingController();
   bool _shouldAutovalidate = false;
@@ -141,10 +141,12 @@ class _LifelogEntryState extends State<LifelogEntry> {
                                     print(
                                       'You typed ${_thoughtsController.text}',
                                     );
-
-                                    // lifelogBloc.add(LifelogAdded(
-                                    //   newLifelog.copyWith(isBeingEdited: false),
-                                    // ));
+                                    final thoughts = _thoughtsController.text;
+                                    final mood =
+                                        Mood.values[_selectedMoodIndex];
+                                    final lifelog =
+                                        Lifelog(mood: mood, thoughts: thoughts);
+                                    lifelogBloc.add(LifelogAdded(lifelog));
                                   } else {
                                     // Remind user to fix errors.
                                     Scaffold.of(context).showSnackBar(

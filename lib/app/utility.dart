@@ -12,5 +12,7 @@ String moodToEmoji(Mood mood) {
 }
 
 String prettyDate(DateTime timestamp) {
-  return DateFormat.yMMMMd('en_US').format(timestamp);
+  return DateFormat.yMMMMd('en_US').format(timestamp) +
+      ' at ' +
+      DateFormat.jm('en_US').format(timestamp);
 }

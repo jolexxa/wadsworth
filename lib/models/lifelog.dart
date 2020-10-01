@@ -20,7 +20,6 @@ class Lifelog extends Equatable {
   final Mood mood;
   final String thoughts;
   final DateTime timestamp;
-  final bool isBeingEdited;
 
   @override
   List<Object> get props => [id, mood, thoughts];
@@ -28,21 +27,17 @@ class Lifelog extends Equatable {
   Lifelog copyWith({
     Mood mood,
     String thoughts,
-    bool isBeingEdited,
-    DateTime timestamp,
   }) {
     return Lifelog(
       mood: mood ?? this.mood,
       thoughts: thoughts ?? this.thoughts,
-      isBeingEdited: isBeingEdited ?? this.isBeingEdited,
-      timestamp: timestamp ?? this.timestamp,
+      timestamp: timestamp,
     );
   }
 
   Lifelog({
     this.mood = Mood.Meh,
     this.thoughts = '',
-    this.isBeingEdited = false,
     this.timestamp,
     this.dbId,
   }) : id = _instances++;
@@ -52,7 +47,8 @@ class Lifelog extends Equatable {
       id: dbId,
       mood: mood.index,
       thoughts: thoughts,
-      timestamp: timestamp?.toIso8601String(),
+      timestamp:
+          timestamp?.toIso8601String() ?? DateTime.now().toIso8601String(),
     );
   }
 
