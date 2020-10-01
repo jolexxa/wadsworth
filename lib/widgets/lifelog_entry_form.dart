@@ -28,7 +28,6 @@ class _LifelogEntryFormState extends State<LifelogEntryForm> {
     var chips = <Widget>[];
     final theme = Theme.of(context);
     final lifelogBloc = BlocProvider.of<LifelogBloc>(context);
-    var newLifelog = Lifelog();
 
     for (var i = 0; i < _moodEmojis.length; i++) {
       final choiceChip = Padding(
