@@ -1,47 +1,93 @@
+import 'dart:io';
+
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:lifelog_repo/src/models/models.dart';
+import 'package:lifelog_repo/src/entities/entities.dart';
 
 class LifelogClient {
+  static final String databaseName = 'wadsworth.db';
+  static final int databaseVersion = 1;
   static final String table = 'lifelog';
 
-  Database db;
+  static Database db;
 
-  Future open(String path) async {
-    db = await openDatabase(path, version: 1,
-        onCreate: (Database db, int version) async {
-      await db.execute('''
-create table $table ( 
-  ${Lifelog.columnId} integer primary key autoincrement, 
-  ${Lifelog.columnMood} integer not null,
-  ${Lifelog.columnThoughts} string not null)
-''');
-    });
+  LifelogClient._privateConstructor();
+
+  static LifelogClient _instance;
+
+  static Future<LifelogClient> get instance async {
+    if (_instance != null) return _instance;
+    _instance = LifelogClient._privateConstructor();
+    await _instance._open();
+    return _instance;
   }
 
-  Future<Lifelog> insert(Lifelog lifelog) async {
+  _open() async {
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    String path = join(documentsDirectory.path, databaseName);
+    db = await openDatabase(
+      path,
+      version: databaseVersion,
+      onCreate: (Database db, int version) async {
+        await db.execute('''
+create table $table ( 
+  ${LifelogEntity.columnId} integer primary key autoincrement, 
+  ${LifelogEntity.columnMood} integer not null,
+  ${LifelogEntity.columnThoughts} string not null,
+  ${LifelogEntity.columnTimestamp} string not null)
+''');
+      },
+    );
+  }
+
+  Future<LifelogEntity> insert(LifelogEntity lifelog) async {
     lifelog.id = await db.insert(table, lifelog.toMap());
     return lifelog;
   }
 
-  Future<Lifelog> getLifelog(int id) async {
-    List<Map> maps = await db.query(table,
-        columns: [Lifelog.columnId, Lifelog.columnMood, Lifelog.columnThoughts],
-        where: '${Lifelog.columnId} = ?',
-        whereArgs: [id]);
+  Future<List<LifelogEntity>> all() async {
+    final List<Map> result = await db.query(
+      table,
+      columns: [
+        LifelogEntity.columnId,
+        LifelogEntity.columnMood,
+        LifelogEntity.columnThoughts,
+        LifelogEntity.columnTimestamp,
+      ],
+      orderBy: '${LifelogEntity.columnTimestamp} ASC',
+    );
+    final lifelogEntities =
+        result.map((map) => LifelogEntity.fromMap(map)).toList();
+    return lifelogEntities;
+  }
+
+  Future<LifelogEntity> getLifelog(int id) async {
+    List<Map> maps = await db.query(
+      table,
+      columns: [
+        LifelogEntity.columnId,
+        LifelogEntity.columnMood,
+        LifelogEntity.columnThoughts,
+        LifelogEntity.columnTimestamp,
+      ],
+      where: '${LifelogEntity.columnId} = ?',
+      whereArgs: [id],
+    );
     if (maps.isNotEmpty) {
-      return Lifelog.fromMap(maps.first);
+      return LifelogEntity.fromMap(maps.first);
     }
     return null;
   }
 
   Future<int> delete(int id) async {
     return await db
-        .delete(table, where: '${Lifelog.columnId} = ?', whereArgs: [id]);
+        .delete(table, where: '${LifelogEntity.columnId} = ?', whereArgs: [id]);
   }
 
-  Future<int> update(Lifelog lifelog) async {
+  Future<int> update(LifelogEntity lifelog) async {
     return await db.update(table, lifelog.toMap(),
-        where: '${Lifelog.columnId} = ?', whereArgs: [lifelog.id]);
+        where: '${LifelogEntity.columnId} = ?', whereArgs: [lifelog.id]);
   }
 
   Future close() async => db.close();
