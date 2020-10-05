@@ -3,20 +3,20 @@ import 'package:meta/meta.dart';
 import 'package:wadsworth/models/models.dart';
 
 class LifelogRepo {
-  LifelogRepo({@required this.client});
+  LifelogRepo({@required LifelogClient client}) : _client = client;
 
-  final LifelogClient client;
+  final LifelogClient _client;
 
   Future<void> addLifelog(Lifelog lifelog) async {
-    await client.insert(lifelog.toEntity());
+    await _client.insert(lifelog.toEntity());
   }
 
   Future<void> deleteLifelog(Lifelog lifelog) async {
-    await client.delete(lifelog.dbId);
+    await _client.delete(lifelog.dbId);
   }
 
   Future<List<Lifelog>> getAllLifelogs() async {
-    return (await client.all())
+    return (await _client.all())
         .map((lifelogEntity) => Lifelog.fromEntity(lifelogEntity))
         .toList();
   }

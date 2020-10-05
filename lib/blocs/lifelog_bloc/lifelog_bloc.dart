@@ -39,7 +39,11 @@ class LifelogBloc extends Bloc<LifelogEvent, LifelogState> {
 
   Stream<LifelogState> _mapLifelogReloadRequestedToState(
       LifelogReloadRequested event) async* {
-    final lifelogs = await repo.getAllLifelogs();
-    yield LifelogStateLoadSuccess(lifelogs: lifelogs);
+    try {
+      final lifelogs = await repo.getAllLifelogs();
+      yield LifelogStateLoadSuccess(lifelogs: lifelogs);
+    } catch (e) {
+      yield LifelogStateLoadFailure();
+    }
   }
 }
