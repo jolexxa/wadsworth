@@ -2,15 +2,15 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:wadsworth/models/models.dart';
-import 'package:lifelog_repo/lifelog_repo.dart';
+import 'package:wadsworth/repos/repos.dart';
 
 part 'lifelog_event.dart';
 part 'lifelog_state.dart';
 
 class LifelogBloc extends Bloc<LifelogEvent, LifelogState> {
-  final LifelogClient lifelogClient;
+  final LifelogRepo repo;
 
-  LifelogBloc({@required this.lifelogClient}) : super(LifelogStateLoading());
+  LifelogBloc({@required this.repo}) : super(LifelogStateLoading());
 
   @override
   Stream<LifelogState> mapEventToState(
@@ -26,22 +26,20 @@ class LifelogBloc extends Bloc<LifelogEvent, LifelogState> {
   }
 
   Stream<LifelogState> _mapLifelogAddedToState(LifelogAdded event) async* {
-    await lifelogClient.insert(event.lifelog.toEntity());
+    await repo.addLifelog(event.lifelog);
     // SOMEDAY: Keep local cache for the sake of performance instead of reloading
     // everything
     add(LifelogReloadRequested());
   }
 
   Stream<LifelogState> _mapLifelogRemovedToState(LifelogRemoved event) async* {
-    await lifelogClient.delete(event.lifelog.dbId);
+    await repo.deleteLifelog(event.lifelog);
     add(LifelogReloadRequested());
   }
 
   Stream<LifelogState> _mapLifelogReloadRequestedToState(
       LifelogReloadRequested event) async* {
-    final lifelogs = (await lifelogClient.all())
-        .map((lifelogEntity) => Lifelog.fromEntity(lifelogEntity))
-        .toList();
+    final lifelogs = await repo.getAllLifelogs();
     yield LifelogStateLoadSuccess(lifelogs: lifelogs);
   }
 }

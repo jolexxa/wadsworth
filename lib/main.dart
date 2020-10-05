@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lifelog_repo/lifelog_repo.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:wadsworth/repos/repos.dart';
 
 import 'package:wadsworth/widgets/lifelogs_list.dart';
 import 'package:wadsworth/widgets/widgets.dart';
@@ -13,7 +14,8 @@ void main() async {
   await WidgetsFlutterBinding.ensureInitialized();
   // Open the Database connection before starting the app.
   final lifelogClient = await LifelogClient.instance;
-  final lifelogBloc = LifelogBloc(lifelogClient: lifelogClient);
+  final lifelogRepo = LifelogRepo(client: lifelogClient);
+  final lifelogBloc = LifelogBloc(repo: lifelogRepo);
   runApp(
     MyApp(
       lifelogBloc: lifelogBloc,

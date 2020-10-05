@@ -18,7 +18,7 @@ To use, open the application and insert new items using the form that pops up. T
 
 ### Roadmap
 
-- [ ] Create a repository/client relationship within the `lifelog_repo` project.
+- [x] Create a repository/client to enable easy testing.
 - [ ] Widget tests
 - [ ] Bloc tests
 - [ ] Add a tip-of-the-day using a free online API
