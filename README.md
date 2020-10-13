@@ -19,7 +19,7 @@ To use, open the application and insert new items using the form that pops up. T
 ### Roadmap
 
 - [x] Create a repository/client to enable easy testing.
-- [X] Basic Bloc tests
-- [ ] Basic Widget tests
+- [X] Example Bloc test
+- [x] Example widget test
 - [ ] Add a tip-of-the-day using a free online API
 - [ ] Improve performance of add/remove lifelogs by caching database results

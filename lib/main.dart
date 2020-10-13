@@ -82,16 +82,6 @@ class AppHome extends StatelessWidget {
                     builder: (context, scrollController) =>
                         Scaffold(body: LifelogEntryForm()),
                   );
-                  // lifelogBloc.add(LifelogAdded(Lifelog(isBeingEdited: true)));
-
-                  // Scroll to new entry after render!
-                  // SchedulerBinding.instance.addPostFrameCallback((_) {
-                  //   _scrollController.animateTo(
-                  //     _scrollController.position.maxScrollExtent,
-                  //     duration: const Duration(milliseconds: 300),
-                  //     curve: Curves.easeOut,
-                  //   );
-                  // });
                 }),
           ),
         ],

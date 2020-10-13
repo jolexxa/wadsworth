@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wadsworth/app/utility.dart';
+import 'package:wadsworth/app/keys.dart';
 import 'package:wadsworth/blocs/blocs.dart';
 import 'package:wadsworth/models/models.dart';
 import 'package:wadsworth/widgets/widgets.dart';
@@ -18,40 +18,12 @@ class _LifelogEntryFormState extends State<LifelogEntryForm> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   final _thoughtsController = TextEditingController();
   bool _shouldAutovalidate = false;
-  int _selectedMoodIndex = 1;
-
-  List<String> get _moodEmojis =>
-      Mood.values.map((mood) => moodToEmoji(mood)).toList();
+  Mood _selectedMood = Mood.Meh;
 
   @override
   Widget build(BuildContext context) {
-    var chips = <Widget>[];
     final theme = Theme.of(context);
     final lifelogBloc = BlocProvider.of<LifelogBloc>(context);
-
-    for (var i = 0; i < _moodEmojis.length; i++) {
-      final choiceChip = Padding(
-        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-        child: ChoiceChip(
-          selected: _selectedMoodIndex == i,
-          label: Text(_moodEmojis[i], style: TextStyle(fontSize: 24.0)),
-          elevation: 3,
-          pressElevation: 5,
-          backgroundColor: Colors.black54,
-          selectedColor: theme.accentColor,
-          onSelected: (bool selected) {
-            setState(() {
-              if (selected) {
-                _selectedMoodIndex = i;
-              }
-            });
-          },
-        ),
-      );
-      chips.add(
-        choiceChip,
-      );
-    }
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -85,11 +57,11 @@ class _LifelogEntryFormState extends State<LifelogEntryForm> {
                             children: [
                               LifelogFieldText('Mood'),
                               Expanded(
-                                // direction: Axis.horizontal,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: chips,
+                                child: LifelogMood(
+                                  initialMood: Mood.Meh,
+                                  onMoodSelected: (mood) {
+                                    _selectedMood = mood;
+                                  },
                                 ),
                               )
                             ],
@@ -101,6 +73,7 @@ class _LifelogEntryFormState extends State<LifelogEntryForm> {
                                 children: [
                                   Expanded(
                                     child: TextFormField(
+                                      key: LIFELOG_ENTRY_THOUGHTS_TEXTFORMFIELD,
                                       controller: _thoughtsController,
                                       autofocus: true,
                                       validator: (value) {
@@ -129,12 +102,13 @@ class _LifelogEntryFormState extends State<LifelogEntryForm> {
                         ButtonBar(
                           children: [
                             FlatButton(
+                              key: LIFELOG_ENTRY_ADD_BUTTON,
                               child: Text('SUBMIT'),
                               onPressed: () {
                                 if (_formKey.currentState.validate()) {
                                   Navigator.of(context).pop();
                                   final thoughts = _thoughtsController.text;
-                                  final mood = Mood.values[_selectedMoodIndex];
+                                  final mood = _selectedMood;
                                   final lifelog =
                                       Lifelog(mood: mood, thoughts: thoughts);
                                   lifelogBloc.add(LifelogAdded(lifelog));

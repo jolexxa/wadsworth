@@ -5,7 +5,7 @@ import 'package:wadsworth/blocs/blocs.dart';
 import 'package:wadsworth/models/lifelog.dart';
 import 'package:wadsworth/repos/repos.dart';
 
-class MockLifelogRepository extends Mock implements LifelogRepo {}
+import '../shared/mock_lifelog_repo.dart';
 
 void main() {
   group('LifelogBloc', () {
