@@ -8,7 +8,6 @@ class LifelogCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      // direction: Axis.vertical,
       padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
       child: Card(
         shape: RoundedRectangleBorder(
