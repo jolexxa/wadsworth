@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
     return BlocProvider<LifelogBloc>(
       create: (BuildContext context) => lifelogBloc,
       child: MaterialApp(
-        title: 'Positive Banking',
+        title: 'Wadsworth',
         theme: AppTheme.theme,
         home: AppHome(),
       ),
