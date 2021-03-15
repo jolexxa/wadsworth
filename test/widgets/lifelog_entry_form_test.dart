@@ -33,7 +33,7 @@ Widget makeTestApp({
   return BlocProvider<LifelogBloc>(
     create: (BuildContext context) => lifelogBloc,
     child: MaterialApp(
-      title: 'Positive Banking',
+      title: 'Test',
       home: Scaffold(body: child),
     ),
   );

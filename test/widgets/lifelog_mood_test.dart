@@ -30,7 +30,7 @@ void main() async {
 
 Widget makeTestApp({@required Widget child}) {
   return MaterialApp(
-    title: 'Positive Banking',
+    title: 'Test',
     home: Scaffold(body: child),
   );
 }
