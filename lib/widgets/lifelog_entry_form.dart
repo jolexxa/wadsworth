@@ -39,7 +39,9 @@ class _LifelogEntryFormState extends State<LifelogEntryForm> {
             child: LifelogCard(
               child: Form(
                 key: _formKey,
-                autovalidate: _shouldAutovalidate,
+                autovalidateMode: _shouldAutovalidate
+                    ? AutovalidateMode.always
+                    : AutovalidateMode.disabled,
                 child: Column(
                   children: [
                     ListTile(
@@ -114,13 +116,15 @@ class _LifelogEntryFormState extends State<LifelogEntryForm> {
                                   lifelogBloc.add(LifelogAdded(lifelog));
                                 } else {
                                   // Remind user to fix errors.
-                                  Scaffold.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Please correct errors before submitting.',
+                                  ScaffoldMessenger.of(context)
+                                    ..hideCurrentSnackBar()
+                                    ..showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Please correct errors before submitting.',
+                                        ),
                                       ),
-                                    ),
-                                  );
+                                    );
                                 }
                                 setState(() {
                                   _shouldAutovalidate = true;

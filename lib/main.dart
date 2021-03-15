@@ -62,7 +62,7 @@ class AppHome extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 8),
               child: Text('Your personal memory manager™️'),
             ),
-            preferredSize: null,
+            preferredSize: Size.fromHeight(0),
           ),
         ),
       ),
@@ -79,8 +79,9 @@ class AppHome extends StatelessWidget {
                 onPressed: () {
                   showCupertinoModalBottomSheet(
                     context: context,
-                    builder: (context, scrollController) =>
-                        Scaffold(body: LifelogEntryForm()),
+                    builder: (context) => Scaffold(
+                      body: LifelogEntryForm(),
+                    ),
                   );
                 }),
           ),
